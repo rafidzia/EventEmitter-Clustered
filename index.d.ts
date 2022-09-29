@@ -2,6 +2,7 @@ export declare class EventEmitter{
     constructor();
 
     emit(eventName: string | symbol, ...args: any[]): boolean;
+    broadcast(eventName: string | symbol, ...args: any[]): boolean;
     on(eventName: string | symbol, listener: (...args: any[]) => void): this;
     addListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
     once(eventName: string | symbol, listener: (...args: any[]) => void): this;

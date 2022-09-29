@@ -26,6 +26,27 @@ class EventEmitter{
         return this.#ee.emit(eventName, ...args)
     }
 
+    broadcast(eventName, ...args){
+        if(cluster.isPrimary){
+            if(cluster.workers){
+                let keys = Object.keys(cluster.workers)
+                for (let i = 0; i < keys.length; i++) {
+                    cluster.workers[keys[i]]?.send({event: eventName, data: args})
+                }
+                return true
+            }
+        }
+        if(cluster.isWorker){
+            if(process.send){
+                process.send({pid: process.pid, event: eventName, data: args}, (err) => {
+                    if(err) throw err
+                    return true
+                })
+            }
+        }
+        return false
+    }
+
     removeListener(eventName, listener){
         if(this.#__listeners[eventName]){
             let index = this.#__listeners[eventName].indexOf(listener)
