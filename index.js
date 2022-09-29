@@ -1,5 +1,3 @@
-"use strict"
-
 import {EventEmitter as OREventEmitter} from "events"
 import cluster from "cluster"
 

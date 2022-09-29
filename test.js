@@ -1,10 +1,6 @@
 "use strict";
 
-// const assert = require("assert");
-// const cluster = require("cluster");
-// const { EventEmitter } = require(".");
-
-import assert from "assert"
+import assert from "assert";
 import cluster from "cluster"
 import EventEmitter from "./index.js"
 var emitter = new EventEmitter();
