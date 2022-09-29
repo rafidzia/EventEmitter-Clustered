@@ -75,13 +75,18 @@ if (cluster.isPrimary) {
     
     emitter.on("handshake", (data) => {
         emitter.emit("received", "handshake received")
-        emitter.emitself("say hello to workers", "Hello World")
+        emitter.emit("say hello to workers", "Hello World")
     })
 
+    let sent = false
     emitter.on("say hello to workers", (data) => {
-        // set a timer to ensure that the first test already done
-        setTimeout(()=>{
-            emitter.broadcast("hello received", data)
-        }, 500)
+        //since there will be multiple event occured due to number of workers, we need to make sure that the event is only sent once
+        if(!sent){
+            sent = true
+            // set a timer to ensure that the first test already done
+            setTimeout(()=>{
+                emitter.emit("hello received", data)
+            }, 500)
+        }
     })
 }
