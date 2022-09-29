@@ -1,5 +1,5 @@
-import {EventEmitter as OREventEmitter} from "events"
-import cluster from "cluster"
+const OREventEmitter = require("events")
+const cluster = require("cluster")
 
 class EventEmitter{
 
@@ -212,4 +212,4 @@ class EventEmitter{
     }
 }
 
-export default EventEmitter
+module.exports = EventEmitter

@@ -1,8 +1,8 @@
 "use strict";
 
-import assert from "assert";
-import cluster from "cluster"
-import EventEmitter from "./index.js"
+const assert = require("assert")
+const cluster = require("cluster")
+const EventEmitter = require("./index.js")
 var emitter = new EventEmitter();
 
 var numcluster = 4
