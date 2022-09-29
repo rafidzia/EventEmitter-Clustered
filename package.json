@@ -1,0 +1,23 @@
+{
+  "name": "eventemitter-clustered",
+  "version": "1.0.0",
+  "description": "Node's event emitter for cluster mode (master-worker, worker-master, worker-master-worker)",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "events",
+    "event-emitter",
+    "event-dispatcher",
+    "listeners",
+    "cluster",
+    "child-process",
+    "workers",
+    "pub/sub",
+    "publisher/subscriber"
+  ],
+  "author": "rafidzia",
+  "license": "MIT"
+}
