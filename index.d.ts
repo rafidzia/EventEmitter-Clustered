@@ -1,6 +1,7 @@
 export declare class EventEmitter{
     constructor();
-
+    
+    emitself(eventName: string | symbol, ...args: any[]): boolean;
     emit(eventName: string | symbol, ...args: any[]): boolean;
     broadcast(eventName: string | symbol, ...args: any[]): boolean;
     on(eventName: string | symbol, listener: (...args: any[]) => void): this;

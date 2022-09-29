@@ -9,7 +9,7 @@ import cluster from "cluster"
 import EventEmitter from "./index.js"
 var emitter = new EventEmitter();
 
-var numcluster = 2
+var numcluster = 4
 
 if (cluster.isPrimary) {
     describe("Cluster Events", () => {
@@ -75,13 +75,13 @@ if (cluster.isPrimary) {
     
     emitter.on("handshake", (data) => {
         emitter.emit("received", "handshake received")
-        emitter.broadcast("say hello to workers", "Hello World")
+        emitter.emitself("say hello to workers", "Hello World")
     })
 
     emitter.on("say hello to workers", (data) => {
         // set a timer to ensure that the first test already done
         setTimeout(()=>{
-            emitter.emit("hello received", data)
+            emitter.broadcast("hello received", data)
         }, 500)
     })
 }

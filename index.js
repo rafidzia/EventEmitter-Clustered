@@ -7,6 +7,10 @@ class EventEmitter{
 
     #ee = new OREventEmitter()
 
+    emitself(eventName, ...args){
+        return this.#ee.emit(eventName, ...args)
+    }
+    
     emit(eventName, ...args){
         if(cluster.isPrimary){
             if(cluster.workers){
