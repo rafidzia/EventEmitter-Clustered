@@ -1,3 +1,5 @@
+"use strict"
+
 import {EventEmitter as OREventEmitter} from "events"
 import cluster from "cluster"
 
@@ -146,31 +148,29 @@ class EventEmitter{
 
     #__startListen(){
         if(cluster.isPrimary){
-            if(cluster.workers){
-                let keys = Object.keys(cluster.workers)
-                for (let i = 0; i < keys.length; i++) {
-                    cluster.workers[keys[i]]?.on("message", (data) => {
-                        if(this.#__listeners[data.event]){
-                            for(let i = 0; i < this.#__listeners[data.event].length; i++){
-                                this.#__listeners[data.event][i](...data.data)
-                            }
+            cluster.on("fork", (worker)=>{
+                worker.on("message", (data)=>{
+                    // console.log("e")
+                    if(this.#__listeners[data.event]){
+                        for(let i = 0; i < this.#__listeners[data.event].length; i++){
+                            this.#__listeners[data.event][i](...data.data)
                         }
-                        if(this.#__onceListeners[data.event]){
-                            for(let i = 0; i < this.#__onceListeners[data.event].length; i++){
-                                this.#__onceListeners[data.event][i](...data.data)
-                            }
-                            this.#__onceListeners[data.event] = []
+                    }
+                    if(this.#__onceListeners[data.event]){
+                        for(let i = 0; i < this.#__onceListeners[data.event].length; i++){
+                            this.#__onceListeners[data.event][i](...data.data)
                         }
-                        if(cluster.workers){
-                            let keys = Object.keys(cluster.workers)
-                            for (let i = 0; i < keys.length; i++) {
-                                if(cluster.workers[keys[i]]?.process.pid == data.pid) continue;
-                                cluster.workers[keys[i]]?.send({event: data.event, data: data.data})
-                            }
+                        this.#__onceListeners[data.event] = []
+                    }
+                    if(cluster.workers){
+                        let keys = Object.keys(cluster.workers)
+                        for (let i = 0; i < keys.length; i++) {
+                            if(cluster.workers[keys[i]]?.process.pid == data.pid) continue;
+                            cluster.workers[keys[i]]?.send({event: data.event, data: data.data})
                         }
-                    })
-                }
-            }
+                    }
+                })
+            })
         }
         if(cluster.isWorker){
             process.on("message", (data) => {
