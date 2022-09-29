@@ -150,7 +150,6 @@ class EventEmitter{
         if(cluster.isPrimary){
             cluster.on("fork", (worker)=>{
                 worker.on("message", (data)=>{
-                    // console.log("e")
                     if(this.#__listeners[data.event]){
                         for(let i = 0; i < this.#__listeners[data.event].length; i++){
                             this.#__listeners[data.event][i](...data.data)
