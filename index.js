@@ -183,6 +183,7 @@ class EventEmitter{
                             this.#__onceListeners[data.event][i](...data.data)
                         }
                         this.#__onceListeners[data.event] = []
+                        this.#ee.removeAllListeners(data.event)
                     }
                     if(cluster.workers){
                         let keys = Object.keys(cluster.workers)
@@ -206,6 +207,7 @@ class EventEmitter{
                         this.#__onceListeners[data.event][i](...data.data)
                     }
                     this.#__onceListeners[data.event] = []
+                    this.#ee.removeAllListeners(data.event)
                 }
             })
         }
