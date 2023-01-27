@@ -75,7 +75,7 @@ if (cluster.isPrimary) {
     })
 
     let sent = false
-    emitter.on("say hello to workers", (data) => {
+    emitter.once("say hello to workers", (data) => {
         //since there will be multiple event occured due to number of workers, we need to make sure that the event is only sent once
         if(!sent){
             sent = true

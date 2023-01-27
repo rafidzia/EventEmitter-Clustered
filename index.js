@@ -56,6 +56,12 @@ class EventEmitter{
                 this.#__listeners[eventName].splice(index, 1)
             }
         }
+        if(this.#__onceListeners[eventName]){
+            let index = this.#__onceListeners[eventName].indexOf(listener)
+            if(index > -1){
+                this.#__onceListeners[eventName].splice(index, 1)
+            }
+        }
         this.#ee.removeListener(eventName, listener)
         return this
     }
@@ -64,6 +70,9 @@ class EventEmitter{
         if(eventName){
             if(this.#__listeners[eventName]){
                 this.#__listeners[eventName] = []
+            }
+            if(this.#__onceListeners[eventName]){
+                this.#__onceListeners[eventName] = []
             }
             this.#ee.removeAllListeners(eventName)
         }else{
@@ -101,11 +110,19 @@ class EventEmitter{
         if(this.#__maxListeners > 0){
             if((this.#__listeners[eventName].length + this.#__onceListeners[eventName].length) < this.#__maxListeners){
                 this.#__onceListeners[eventName].push(listener)
-                this.#ee.once(eventName, listener)
+                this.#ee.once(eventName, (data)=>{
+                    let index = this.#__onceListeners[eventName].indexOf(listener)
+                    if(index > -1) this.#__onceListeners[eventName].splice(index, 1)
+                    listener(data)
+                })
             }
         }else{
             this.#__onceListeners[eventName].push(listener)
-            this.#ee.once(eventName, listener)
+            this.#ee.once(eventName, (data)=>{
+                let index = this.#__onceListeners[eventName].indexOf(listener)
+                if(index > -1) this.#__onceListeners[eventName].splice(index, 1)
+                listener(data)
+            })
         }
         return this
     }
@@ -179,11 +196,11 @@ class EventEmitter{
                         }
                     }
                     if(this.#__onceListeners[data.event]){
+                        this.#ee.removeAllListeners(data.event)
                         for(let i = 0; i < this.#__onceListeners[data.event].length; i++){
                             this.#__onceListeners[data.event][i](...data.data)
                         }
                         this.#__onceListeners[data.event] = []
-                        this.#ee.removeAllListeners(data.event)
                     }
                     if(cluster.workers){
                         let keys = Object.keys(cluster.workers)
@@ -203,11 +220,11 @@ class EventEmitter{
                     }
                 }
                 if(this.#__onceListeners[data.event]){
+                    this.#ee.removeAllListeners(data.event)
                     for(let i = 0; i < this.#__onceListeners[data.event].length; i++){
                         this.#__onceListeners[data.event][i](...data.data)
                     }
                     this.#__onceListeners[data.event] = []
-                    this.#ee.removeAllListeners(data.event)
                 }
             })
         }
